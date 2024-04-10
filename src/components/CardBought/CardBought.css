@@ -1,0 +1,36 @@
+.card-bought {
+  width: 100%;
+  background-image: url("/backgroundCart.svg");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  padding: 1rem;
+  box-sizing: border-box;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.card-bought p {
+  border-radius: .5rem;
+}
+
+.card-bought__product-name {
+  display: block;
+  margin: auto;
+  padding: 0.5rem;
+  background-color: #231e1a;
+}
+
+.card-bought__conteiner-details {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 70%;
+}
+
+.card-bought__details {
+  padding: 0.5rem;
+  background-color: #231e1a;
+  width: 100%;
+}

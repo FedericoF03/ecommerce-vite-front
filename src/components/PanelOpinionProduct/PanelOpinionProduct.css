@@ -1,0 +1,24 @@
+.panel-opinion-product {
+  max-width: 100%;
+  width: 30rem;
+}
+
+.panel-opinion-product__box-opinion-data {
+  background-color: #14283c;
+  display: flex;
+  justify-content: space-between;
+}
+
+.panel-opinion-product__box-opinion {
+  background-color: #c7c5c58f;
+  display: flex;
+  white-space: pre-wrap;
+  text-align: left;
+}
+
+.panel-opinion-product__more-opinion {
+  background-color: transparent;
+  color: #000000;
+  text-align: end;
+  width: 100%;
+}

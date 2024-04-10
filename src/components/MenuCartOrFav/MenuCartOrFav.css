@@ -1,0 +1,19 @@
+.menu-cart-or-fav {
+  width: 100%;
+}
+
+.menu-cart-or-fav__cart-link {
+  box-sizing: border-box;
+  width: 50%;
+  text-align: center;
+  background-color: #231e1a;
+  border-right: .1rem #151412 solid;
+}
+
+.menu-cart-or-fav__cart-fav {
+  border-right: 0.5rem;
+  box-sizing: border-box;
+  width: 50%;
+  background-color: #231e1a;
+  text-align: center;
+}

@@ -1,0 +1,40 @@
+.panel-product {
+  background-color: #f79e38;
+  width: 30rem;
+  max-width: 90%;
+  display: flex;
+  box-sizing: border-box;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.panel-product__quantity-controllers-conteiner {
+  display: flex;
+  align-items: center;
+  width: 50%;
+}
+
+.panel-product__quantity-controllers-conteiner input {
+  width: 1.5rem;
+  max-width: 50%;
+}
+.panel-product__quantity-controllers-conteiner button {
+  width: 1rem;
+  max-width: 50%;
+}
+
+.panel-product__controllers {
+  display: inherit;
+  flex-direction: column;
+  gap: 1rem;
+  width: 50%;
+}
+
+.panel-product__control-buttons {
+  padding: 0.5rem 2rem;
+}
+
+.panel-product__control-buttons--grey {
+  background-color: #857b7c;
+}

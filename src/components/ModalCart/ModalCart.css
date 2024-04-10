@@ -1,0 +1,23 @@
+.conteiner-cart-modal {
+  width: 100%;
+  max-width: 500px;
+  position: fixed;
+  top: 0;
+  right: 0;
+}
+
+.conteiner-cart-modal--empty {
+  max-width: 500px;
+  position: absolute;
+  top: 0;
+  text-align: center;
+  right: 0;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.svg {
+  height: 100%;
+  width: 100%;
+}

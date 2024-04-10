@@ -1,0 +1,9 @@
+.filter {
+  background-color: #ffffff;
+  color: #000000;
+  text-align: end;
+  width: 100%;
+  box-sizing: border-box;
+  padding: .5rem;
+  border-bottom: .1rem #000000 solid;
+}

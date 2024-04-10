@@ -1,0 +1,75 @@
+.card-cart {
+  width: 100%;
+  background-image: url("/backgroundCart.svg");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+.card-cart__img-product {
+  width: 4rem;
+  max-width: 20%;
+  border-radius: 50%;
+}
+
+.card-cart__conteiner-info-cart {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+}
+
+.card-cart__product-name {
+  background-color: #231e1a;
+  max-width: 80%;
+  display: block;
+  margin: 0rem;
+  padding: 0.2rem;
+  border-radius: 0.2rem;
+}
+
+.card-cart__conteiner-input {
+  display: flex;
+  text-align: center;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.card-cart__buttons {
+  color: #231e1a;
+  clip-path: polygon(0 50%, 100% 100%, 100% 0);
+  font-size: larger;
+}
+
+.card-cart__button--right {
+  color: #231e1a;
+  clip-path: polygon(0 0, 0 100%, 100% 50%);
+  font-size: larger;
+}
+
+.card-cart__quantity-input {
+  min-width: "1ch";
+  max-width: "8ch";
+  overflow: "hidden";
+  color: #231e1a;
+  padding: 0.5rem;
+  background-color: #ffffff;
+}
+
+.card-cart__conteiner-button-process {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.card-cart__ajust-button {
+  width: 1rem;
+  align-self: end;
+}
+
+.card-cart__conteiner-buttons {
+  border-radius: 1rem;
+  padding: 0.5rem;
+  background-color: #231e1a;
+}

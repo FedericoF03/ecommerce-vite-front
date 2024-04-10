@@ -1,0 +1,30 @@
+.card-fav {
+  width: 100%;
+  background-image: url("/backgroundCart.svg");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+.card-fav__conteiner-controllers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  box-sizing: border-box;
+  justify-content: flex-start;
+}
+
+.card-fav__conteiner-controllers * {
+  border-radius: .5rem;
+}
+
+.card-fav__product-name {
+  padding: .2rem;
+  background-color: #231E1A;
+}
+
+.card-fav__buttons {
+  width: calc(50% - 1rem);
+  padding: .5rem;
+}

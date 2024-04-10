@@ -1,0 +1,26 @@
+.card-History {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  width: 100%;
+  background-color: #e55605;
+}
+
+.card-History > p {
+  padding: 0.5rem 1rem 0 0;
+  text-align: end;
+  width: 100%;
+}
+
+.card-History__conteiner-data {
+  gap: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.card-History__conteiner-data > p {
+  align-self: center;
+  width: 50%;
+  background-color: #231e1a;
+  border-radius: 0.5rem;
+  padding: 0.2rem;
+}

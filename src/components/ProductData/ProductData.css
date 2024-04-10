@@ -1,0 +1,29 @@
+.product-data__caracteristic {
+  padding: 0.5rem;
+  border-radius: 1rem;
+  background-color: #231e1a;
+}
+.product-data {
+  width: 30rem;
+  max-width: 90%;
+  gap: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.product-data__description-title {
+  color: #ffffff;
+}
+
+.product-data__description {
+  border-radius: 1rem;
+  box-sizing: border-box;
+  padding: 1rem;
+  background-color: #f79e38;
+  color: #000000;
+  text-align: left;
+  word-break: break-word;
+  font-size: 1rem;
+  white-space: break-spaces;
+  font-weight: 500;
+}

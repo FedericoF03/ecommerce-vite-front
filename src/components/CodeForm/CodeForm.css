@@ -1,0 +1,21 @@
+.conteiner-user-form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 90%;
+  max-width: 20rem;
+}
+
+.user-form {
+  display: flex;
+  padding: 2.5rem 0;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  background-color: #231e1a;
+}
+
+.user-form__img {
+  width: 5rem;
+}

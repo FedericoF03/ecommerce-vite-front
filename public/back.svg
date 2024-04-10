@@ -1,0 +1,17 @@
+<svg
+  viewBox="0 0 360 360"
+  preserveAspectRatio="none"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <path
+    d="M144 207.562
+      C84.5076 134.621 74 18.0049 0 0
+      V360
+      H360
+      C249.5 311.995 162 229.631 144 207.562Z"
+    fill="#FA881E"
+    fillOpacity="0.48"
+    shapeRendering="crispEdges"
+  />
+</svg>
