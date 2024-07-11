@@ -1,53 +1,48 @@
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import PropTypes from "prop-types";
-
-import Cards from "../components/Cards/Cards";
+import uuid from "react-uuid";
 
 import { FavContext } from "../context/FavContext";
 
-import usePagination from "../hooks/usePagination";
-import { useFetch } from "../hooks/useFetch";
-import requests from "../assets/consts/request";
+import checkInstanceIrequest from "../utils/checkInstanceIrequest";
+
+import URLS from "../consts/URLS";
+import requestOptions from "../consts/requestOptions";
+
+// import usePagination from "../hooks/usePagination";
+import useFetch from "../hooks/useFetch";
+
+import Cards from "../components/Cards/Cards";
 
 const Fav = () => {
-  const fav = useContext(FavContext);
-  const { pagination } = usePagination({ limitSet: 3 });
+  const { userFavorites } = useContext(FavContext);
+  // const { pagination } = usePagination([3]);
 
-  const arrayIDS =
-    fav.data.result &&
-    fav.data.result
-      .map((el, i) =>
-        pagination.offset <= i < 20 + pagination.offset ? el.item_id : ""
-      )
-      .join();
-
-  const { data, setData } = useFetch({
-    url: `http://localhost:3005/products/item?ids=${arrayIDS}`,
-    config: requests.getURLencoded,
-    status: "depending waiting",
+  const products = useFetch({
+    url:
+      checkInstanceIrequest(userFavorites.data) &&
+      userFavorites.data.response.length > 1
+        ? URLS.items +
+          `?ids=${userFavorites.data.response
+            .map((item) => item.item_id)
+            .join(",")}`
+        : "",
+    options: requestOptions.getBodyEncoded,
   });
 
-  const favSetter = setData;
-
-  useEffect(() => {
-    fav.data.result?.length < 1 &&
-      favSetter((cartState) => ({ ...cartState, result: [] }));
-  }, [fav.data.result?.length, favSetter]);
-
-  useEffect(() => {
-    favSetter((cartState) => ({ ...cartState, status: "wait" }));
-  }, [arrayIDS, favSetter]);
   return (
     <>
-      {data.result && (
+      {checkInstanceIrequest(products.data) && (
         <>
-          {data.result.length < 1 && data.status === "authorized" && (
+          {products.data.response.length < 1 && (
             <p style={{ color: "white" }} className="button-cart-buy-all">
               No hay producto favorito
             </p>
           )}
-          {data.result.length > 0 &&
-            data.result.map((el) => <Cards key={el.body.id} item={el.body} />)}
+          {products.data.response.length > 0 &&
+            products.data.response.map((product) => (
+              <Cards key={uuid()} product={product.body} />
+            ))}
         </>
       )}
     </>

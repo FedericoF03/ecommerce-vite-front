@@ -1,18 +1,10 @@
-import { Fragment, useContext, useState } from "react";
-import { useFetch } from "../hooks/useFetch";
-import { SiteContext } from "../context/SiteContext";
-import requests from "../assets/consts/request";
-import useDependency from "../hooks/useDependency";
-import useToggles from "../hooks/useToggles";
-import uuid from "react-uuid";
-
-const CreateProduct = (props) => {
-  const site = useContext(SiteContext);
-  const { list, handlerList, setList } = useToggles();
-  const arrayList = Object.values(list);
+const CreateProduct = () => {
+  // const site = useContext(SiteContext);
+  // const { list, handlerList, setList } = useToggles();
+  // const arrayList = Object.values(list);
   return (
     <div>
-      <p>Product creator</p>
+      {/* <p>Product creator</p>
       <button data-name={"categories"} onClick={(e) => handlerList({ e })}>
         Categories
       </button>
@@ -58,7 +50,6 @@ const CreateProduct = (props) => {
                           config: requests.getURLencoded,
                           attribute: "data-id",
                         });
-                        
                       }}
                     >
                       {path.name}
@@ -88,7 +79,7 @@ const CreateProduct = (props) => {
               </Fragment>
             )
         )}
-      </div>
+      </div> */}
     </div>
   );
 };

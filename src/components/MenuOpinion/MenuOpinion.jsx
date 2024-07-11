@@ -1,34 +1,37 @@
 import { PropTypes } from "prop-types";
-import { useFetch } from "../../hooks/useFetch";
-import requests from "../../assets/consts/request";
 import { useState } from "react";
 
-const MenuOpinion = ({ item, handlerList, listData }) => {
+import URLS from "../../consts/URLS";
+import requestOptions from "../../consts/requestOptions";
+
+import useFetch from "../../hooks/useFetch";
+import { Fetcher } from "../../test/components/models/Request/Fetcher";
+import makeRequest from "../../utils/makeRequest";
+import { HandlerErrorDefault } from "../../test/components/models/HandlerError/HandlerErrorDefault";
+
+const MenuOpinion = ({ product }) => {
   const [input, setInput] = useState({ title: "", content: "" });
   const { data, setData } = useFetch({
-    url: `http://localhost:3005/user/opinion/byproduct?id=${item.id}`,
-    obj: requests.getURLencoded,
+    url: URLS.opinionByProduct + `?id=${product.id}`,
+    obj: requestOptions.getBodyEncoded,
   });
 
   const submit = async (e) => {
     e.preventDefault();
 
     if (input.title.length > 0 && input.content.length > 0) {
-      await fetch(`http://localhost:3005/user/myopinion`, {
-        credentials: "include",
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          itemID: item.id,
-          title: input.title,
-          content: input.content,
-        }),
-      }).then((el) => {
-        if (el) {
+      const myOpinionOptions = requestOptions.postBodyAppJson;
+      myOpinionOptions.body = JSON.stringify({
+        itemID: product.id,
+        title: input.title,
+        content: input.content,
+      });
+      makeRequest(
+        new Fetcher(URLS.myOpinion, myOpinionOptions),
+        new HandlerErrorDefault()
+      ).then((opinion) => {
+        if (opinion) {
           setData((e) => ({ ...e, loading: true }));
-          handlerList({ e });
         }
       });
     }
@@ -36,19 +39,11 @@ const MenuOpinion = ({ item, handlerList, listData }) => {
 
   return (
     <div className="background-size--100vh">
-      {!data.result &&
-        !data.loading &&
-        listData.menuOpinion.display &&
-        !listData.opinionCreate.display && (
-          <p
-            data-name={"menuOpinion"}
-            onClick={(e) => {
-              handlerList({ e });
-            }}
-          >
-            {"<----"}
-          </p>
-        )}
+      {
+        <p data-name={"menuOpinion"} onClick={(e) => {}}>
+          {"<----"}
+        </p>
+      }
       {data.result && !data.loading && (
         <div>
           <p>{data.result.title}</p>
@@ -57,27 +52,15 @@ const MenuOpinion = ({ item, handlerList, listData }) => {
           </div>
         </div>
       )}
-      {!data.result && !data.loading && !listData.opinionCreate.display && (
-        <p>No opinions for this product</p>
-      )}
-      {!data.result && !data.loading && !listData.opinionCreate.display && (
-        <p
-          data-name={"opinionCreate"}
-          onClick={(e) => {
-            handlerList({ e });
-          }}
-        >
+      {!data.result && !data.loading && <p>No opinions for this product</p>}
+      {!data.result && !data.loading && (
+        <p data-name={"opinionCreate"} onClick={(e) => {}}>
           Open opinion
         </p>
       )}
-      {!data.loading && listData.opinionCreate.display && (
+      {!data.loading && (
         <form>
-          <p
-            data-name={"opinionCreate"}
-            onClick={(e) => {
-              handlerList({ e });
-            }}
-          >
+          <p data-name={"opinionCreate"} onClick={(e) => {}}>
             {"<----"}
           </p>
           <input
@@ -118,7 +101,7 @@ const MenuOpinion = ({ item, handlerList, listData }) => {
         <input
           type="submit"
           data-name={"opinionCreate"}
-          onClick={(e) => handlerList({ e })}
+          onClick={(e) => {}}
           value="Edit opinion"
         />
       )}
@@ -126,8 +109,6 @@ const MenuOpinion = ({ item, handlerList, listData }) => {
   );
 };
 MenuOpinion.propTypes = {
-  item: PropTypes.object,
-  handlerList: PropTypes.func,
-  listData: PropTypes.object,
+  product: PropTypes.object,
 };
 export default MenuOpinion;

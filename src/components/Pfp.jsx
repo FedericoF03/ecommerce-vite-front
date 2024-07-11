@@ -3,11 +3,12 @@ import { useContext } from "react";
 import { AuthContext } from "../context/AuthenticationContext";
 
 const Pfp = (props) => {
-  const auth = useContext(AuthContext);
-  const pfp =
-    auth.data.status === "authorized"
-      ? auth.data.result.thumbnail.picture_url
-      : "/user.png";
+  const { user } = useContext(AuthContext);
+
+  const pfp = user.isAuth
+    ? user.data.thumbnail.picture_url
+    : "/user.png";
+    
   return (
     <>
       <button

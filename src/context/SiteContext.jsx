@@ -1,11 +1,12 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext } from "react";
 import PropTypes from "prop-types";
 
-import { useFetch } from "../hooks/useFetch";
+import requestOptions from "../consts/requestOptions";
 
-import requests from "../assets/consts/request";
+import useCountry from "../hooks/useCountry";
+import useFetch from "../hooks/useFetch";
 
-export const SiteContext = createContext();
+import URLS from "../consts/URLS";
 
 const configSiteAnalytics = JSON.stringify({
   dateRanges: [
@@ -26,44 +27,33 @@ const configSiteAnalytics = JSON.stringify({
   ],
 });
 
+export const SiteContext = createContext();
+
 export const SiteProvider = ({ children }) => {
-  const [country, setCountry] = useState("");
+  const { country, handlerCountry } = useCountry();
 
-  const { data, setData, initStateFetch } = useFetch({
-    url: `http://localhost:3005/site/categories?${
-      country && `site=${country}`
-    }`,
-    config: requests.getURLencoded,
+  const categoriesList = useFetch({
+    url:
+      country.length > 0
+        ? URLS.siteCategories + `?site=${country}`
+        : URLS.siteCategories,
+    options: requestOptions.getBodyEncoded,
   });
 
-  const currency = useFetch({
-    url: `http://localhost:3005/site/currency?currency=ARS`,
-    config: requests.getURLencoded,
+  const optionsGoogleAnalytics = requestOptions.postBodyAppJson;
+  optionsGoogleAnalytics.body = configSiteAnalytics;
+  const googleAnalyticsTendency = useFetch({
+    url: URLS.analytics,
+    options: optionsGoogleAnalytics,
   });
-
-  const analyticProductTendency = useFetch({
-    url: "http://localhost:3005/site/analytic",
-    config: {
-      ...requests.postAppJson,
-      body: configSiteAnalytics,
-    },
-  });
-
-  const handlerCountry = (value) => setCountry(value);
-
-  useEffect(() => {
-    setData((c) => ({ ...c, status: "wait" }));
-  }, [country, setData]);
 
   return (
     <SiteContext.Provider
       value={{
-        data,
-        analyticProductTendency,
         country,
         handlerCountry,
-        currency,
-        initStateFetch,
+        categoriesList,
+        googleAnalyticsTendency,
       }}
     >
       {children}

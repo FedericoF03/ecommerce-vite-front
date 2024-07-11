@@ -11,31 +11,19 @@ const Cards = (props) => {
   const { pathname } = useLocation();
 
   if (pathname.includes("cart"))
-    return (
-      <CardCart
-        item={props.item}
-        setTotals={props.setTotals}
-        index={props.index}
-      />
-    );
-  else if (pathname.includes("favorite")) return <CardFav item={props.item} />;
-  else if (pathname.includes("history"))
-    return <CardHistory item={props.item} />;
-  else if (pathname.includes("boughts"))
+    return <CardCart product={props.product} index={props.index} />;
+  if (pathname.includes("favorite")) return <CardFav product={props.product} />;
+  if (pathname.includes("history"))
+    return <CardHistory product={props.product} />;
+  if (pathname.includes("boughts"))
     return <CardBoughts bought={props.bought} />;
-  else
-    return (
-      <CardBought
-        listData={props.listData}
-        handlerList={props.handlerList}
-        item={props.item}
-      />
-    );
+  else if (pathname.includes("bought"))
+    return <CardBought product={props.product} />;
 };
 
 Cards.propTypes = {
   props: PropTypes.object,
-  item: PropTypes.object,
+  product: PropTypes.object,
   index: PropTypes.number,
   setTotals: PropTypes.func,
   handlerList: PropTypes.func,

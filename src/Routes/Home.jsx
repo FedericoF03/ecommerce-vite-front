@@ -1,70 +1,83 @@
-import { useContext, useMemo } from "react";
+import { useContext, useDebugValue } from "react";
 
-import ProductSections from "../components/ProductSections/ProductSections";
+import checkInstanceIrequest from "../utils/checkInstanceIrequest";
+
+import requestOptions from "../consts/requestOptions";
+import URLS from "../consts/URLS";
 
 import { SiteContext } from "../context/SiteContext";
 
-import { useFetch } from "../hooks/useFetch";
-import useDependency from "../hooks/useDependency";
+import useFetch from "../hooks/useFetch";
+import useRandomNumberByArray from "../hooks/useRandomNumberByArray";
 
-import requests from "../assets/consts/request";
-
-import emptyOrFull from "../utils/emptyOrFull";
+import HeaderAndFooter from "../components/HeaderAndFooter/HeaderAndFooter";
+import ProductSections from "../pages/Home/ProductSections/ProductSections";
+import AdivceNoResults from "../components/AdivceNoResults";
 
 const Home = () => {
   const site = useContext(SiteContext);
+  const siteCategoriesListResponse = site.categoriesList.data.response;
+  const randomNumber = useRandomNumberByArray(siteCategoriesListResponse);
 
-  const categoryAnalytic =
-    site.analyticProductTendency.data.status === "authorized" &&
-    site.analyticProductTendency.data.result.value;
-
-  const tendency = useFetch({
-    url: `http://localhost:3005/products/items?category=${categoryAnalytic}&limit=10`,
-    config: requests.getURLencoded,
-    status: "depend waiting",
+  const randomCategoryBySite = useFetch({
+    url:
+      randomNumber.item > 0
+        ? URLS.itemsCategories +
+          `?category=${
+            siteCategoriesListResponse[randomNumber.item].id
+          }&limit=10`
+        : "",
+    options: requestOptions.getBodyEncoded,
   });
 
-  useDependency(site.analyticProductTendency, tendency.setData);
-
-  const categoryAnalytics = emptyOrFull(tendency, ["results"]);
-
-  const numberRandom = useMemo(
-    () =>
-      site.data.status === "authorized" && {
-        id: site.data.result[
-          Math.floor(Math.random() * site.data.result.length)
-        ].id,
-        site,
-      },
-    [site]
-  );
-
-  const randomCategory = useFetch({
-    url: `http://localhost:3005/products/items?category=${
-      numberRandom.id
-    }&limit=10${site.country && `&site=${site.country}`}`,
-    config: requests.getURLencoded,
-    status: "depend waiting",
+  const categoryTendency = useFetch({
+    url: checkInstanceIrequest(site.googleAnalyticsTendency.data)
+      ? URLS.itemsCategories +
+        `?category=${site.googleAnalyticsTendency.data.response.value}&limit=10`
+      : "",
+    options: requestOptions.getBodyEncoded,
   });
-
-  const randomCategorySetter = randomCategory.setData;
-
-  useDependency(site, randomCategorySetter);
-
-  const categoryRandom = emptyOrFull(randomCategory, ["results"]);
 
   return (
     <>
-      <main className="background-color--w background-size--100vh">
-        {categoryAnalytics.full && (
-          <ProductSections dep={tendency.data} currency={site.currency} />
-        )}
-        {categoryAnalytics.empty && <p>No results</p>}
-        {categoryRandom.full && (
-          <ProductSections dep={randomCategory.data} currency={site.currency} />
-        )}
-        {categoryRandom.empty && <p>No results</p>}
-      </main>
+      <HeaderAndFooter>
+        <main className="background-color--w background-size--100vh">
+          {!randomCategoryBySite.isLoading &&
+            checkInstanceIrequest(randomCategoryBySite.data) && (
+              <>
+                {randomCategoryBySite.data.response.results.length > 0 ? (
+                  <ProductSections
+                    products={randomCategoryBySite.data.response.results}
+                    title={
+                      randomCategoryBySite.data.response.filters.find(
+                        (filter) => filter.id === "category"
+                      ).values[0].name
+                    }
+                  />
+                ) : (
+                  <AdivceNoResults />
+                )}
+              </>
+            )}
+          {!categoryTendency.isLoading &&
+            checkInstanceIrequest(categoryTendency.data) && (
+              <>
+                {categoryTendency.data.response.results.length > 0 ? (
+                  <ProductSections
+                    products={categoryTendency.data.response.results}
+                    title={
+                      categoryTendency.data.response.filters.find(
+                        (filter) => filter.id === "category"
+                      ).values[0].name
+                    }
+                  />
+                ) : (
+                  <AdivceNoResults />
+                )}
+              </>
+            )}
+        </main>
+      </HeaderAndFooter>
     </>
   );
 };

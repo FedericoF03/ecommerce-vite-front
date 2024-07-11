@@ -1,56 +1,56 @@
 import { useEffect, useState } from "react";
-const initStateFetch = {
-  result: null,
-  error: null,
-  status: "wait",
-  config: null,
-  aborter: null,
-};
-export const useFetch = ({ url, config, status }) => {
-  const [data, setData] = useState({
-    ...initStateFetch,
-    status: status ? status : initStateFetch.status,
-    config,
-  });
+
+import { HandlerErrorDefault } from "../test/components/models/HandlerError/HandlerErrorDefault";
+import { Fetcher } from "../test/components/models/Request/Fetcher";
+
+import makeRequest from "../utils/makeRequest";
+import checkInstanceIrequest from "../utils/checkInstanceIrequest";
+
+// const errorInitState = {};
+
+const isLoadingInitState = true;
+
+const useFetch = ({ url, options }) => {
+  const [data, setData] = useState({});
+  const [isLoading, setIsLoading] = useState(isLoadingInitState);
+  // const [error, setError] = useState(errorInitState);
+  const requestOptionsStringify = JSON.stringify(options);
 
   useEffect(() => {
-    const aborter = new AbortController();
-    if (data.status === "wait") {
-      setData((antState) => ({ ...antState, aborter }));
-      (async () => {
+    let isRaceCondition = false;
+    !isRaceCondition && setIsLoading(isLoadingInitState);
+
+    const fetchInEffect = async () => {
+      if (url !== "") {
         try {
-          const getData = await fetch(url, {
-            ...data.config,
-            signal: aborter.signal,
-          });
+          const requestOptionsParse = JSON.parse(requestOptionsStringify);
+          const response = await makeRequest(
+            new Fetcher(url, requestOptionsParse),
+            new HandlerErrorDefault()
+          );
 
-          if (getData.status > 400) {
-            const error = new Error(getData.statusText);
-            error.code = getData.status;
-            throw error;
+          if (!isRaceCondition && checkInstanceIrequest(response)) {
+            setData(response);
           }
-          await getData.json().then((res) => {
-            if (res.error || res.code || res.status > 400) {
-              const error = new Error(res.error || res.msg);
-              error.code = res.code;
-              throw error;
-            }
-            setData((antState) => ({ ...antState, result: res, status: "authorized" }));
-          });
         } catch (error) {
-          if (!aborter.signal.aborted)
-            setData((antState) => ({
-              ...antState,
-              status: "failed",
-              error: { code: error.code, msg: error.message },
-            }));
+          console.log(error, url);
         }
-      })();
-    }
+      }
 
-    return () => aborter.abort();
-  }, [data.status, data.config, url]);
+      setIsLoading(false);
+    };
+    fetchInEffect();
+    return () => {
+      isRaceCondition = true;
+    };
+  }, [url, requestOptionsStringify]);
 
-  const aborterClick = () => data.aborter && data.aborter.abort();
-  return { data, setData, aborterClick, initStateFetch };
+  return {
+    data,
+    isLoading,
+    // error,
+    setData,
+  };
 };
+
+export default useFetch;

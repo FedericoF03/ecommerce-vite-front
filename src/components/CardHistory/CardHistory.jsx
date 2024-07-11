@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import "./CardHistory.css";
 
-const CardHistory = ({ item: { title, thumbnail, bookmarked_date, id } }) => {
+const CardHistory = ({ product: { title, thumbnail, bookmarked_date, id } }) => {
   const meses = [
     "Enero",
     "Febrero",

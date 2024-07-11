@@ -1,33 +1,40 @@
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import "./CardBoughts.css";
-import requests from "../../assets/consts/request";
+
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthenticationContext";
 import { BoughtContext } from "../../context/BoughtContext";
+import requestOptions from "../../consts/requestOptions";
+import makeRequest from "../../utils/makeRequest";
+import { Fetcher } from "../../test/components/models/Request/Fetcher";
+import { HandlerErrorDefault } from "../../test/components/models/HandlerError/HandlerErrorDefault";
+import URLS from "../../consts/URLS";
+import checkInstanceIrequest from "../../utils/checkInstanceIrequest";
 
 const CardBoughts = ({ bought }) => {
-  const boughContext = useContext(BoughtContext);
+  const { boughts } = useContext(BoughtContext);
   const { data } = useContext(AuthContext);
 
   const postFacture = async (e) => {
     e.preventDefault();
-    if (boughContext.data.status === "authorized") {
-      const orders = boughContext.data.result.orders.find(
+    if (checkInstanceIrequest(boughts.data)) {
+      const bought = boughts.data.result.orders.find(
         (el) => el._id === bought._id
       );
-
-      await fetch("http://localhost:3005/user/boughtsPDF", {
-        ...requests.postAppJson,
-        body: JSON.stringify({
-          orders,
-          street: null,
-          country: null,
-          location: null,
-          factureSerial: bought._id,
-          user: data.result.nickname,
-        }),
-      })
+      const pdfOptions = requestOptions.postAppJson;
+      pdfOptions.body = JSON.stringify({
+        bought,
+        street: null,
+        country: null,
+        location: null,
+        factureSerial: bought._id,
+        user: data.result.nickname,
+      });
+      makeRequest(
+        new Fetcher(URLS.PDF, requestOptions.postBodyAppJson),
+        new HandlerErrorDefault()
+      )
         .then((response) => response.blob())
         .then((blob) => {
           // Crea un enlace temporal y descarga el archivo

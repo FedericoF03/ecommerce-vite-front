@@ -65,41 +65,18 @@ const CardCartModal = ({ item }) => {
           Buy
         </Link>
         {number === item.quantity ? (
-          <button
-            className="card-cart__conteiner-buttons"
-            onClick={(e) => {
-              e.stopPropagation();
-              updateCart({
-                item_id: item.id,
-                quantity: 0,
-              });
-            }}
-          >
+          <button className="card-cart__conteiner-buttons" onClick={() => {}}>
             remove
           </button>
         ) : number === item.quantity ? (
           <button
-            onClick={() =>
-              updateCart({
-                item_id: item.id,
-                quantity: number,
-              })
-            }
+            onClick={() => {}}
             className="panel-product__control-buttons panel-product__control-buttons--grey"
           >
             CART
           </button>
         ) : (
-          <button
-            className="card-cart__conteiner-buttons"
-            onClick={(e) => {
-              e.stopPropagation();
-              updateCart({
-                item_id: item.id,
-                quantity: number,
-              });
-            }}
-          >
+          <button className="card-cart__conteiner-buttons" onClick={() => {}}>
             update
           </button>
         )}

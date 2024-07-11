@@ -1,53 +1,40 @@
+import { useContext } from "react";
+import uuid from "react-uuid";
+
+import { AuthContext } from "../context/AuthenticationContext";
+
+import URLS from "../consts/URLS";
+import requestOptions from "../consts/requestOptions";
+
+import checkInstanceIrequest from "../utils/checkInstanceIrequest";
+
+import useFetch from "../hooks/useFetch";
+
 import Cards from "../components/Cards/Cards";
 
-import useDependency from "../hooks/useDependency";
-import { useFetch } from "../hooks/useFetch";
-import usePagination from "../hooks/usePagination";
-
-import requests from "../assets/consts/request";
-
 const History = () => {
-  const history = useFetch({
-    url: "http://localhost:3005/user/history",
-    config: requests.getURLencoded,
-  });
-  const { pagination } = usePagination({ limitSet: 3 });
+  const { user } = useContext(AuthContext);
 
-  const ids =
-    history.data.status === "authorized" &&
-    history.data.result &&
-    history.data.result
-      .map((el, i) =>
-        pagination.offset <= i < 20 + pagination.offset ? el.item_id : ""
-      )
-      .join();
+  const history = useFetch({
+    url: user.isAuth ? URLS.history : "",
+    options: requestOptions.getBodyEncoded,
+  });
 
   const products = useFetch({
-    url: `http://localhost:3005/products/item?ids=${ids}`,
-    config: requests.getURLencoded,
-    status: "depend waiting",
+    url:
+      checkInstanceIrequest(history.data) && history.data.response.length > 0
+        ? URLS.items +
+          `?ids=${history.data.response.map((item) => item.item_id).join(", ")}`
+        : "",
+    options: requestOptions.getBodyEncoded,
   });
-
-  useDependency(history, products.setData);
-
-  const productsCheck =
-    products.data.status === "authorized" &&
-    products.data.result &&
-    products.data.result.map((el) => ({
-      ...el.body,
-      ...history.data.result.find((elsec) => elsec.item_id === el.body.id),
-    }));
 
   return (
     <main className="background-color--b background-size--100vh">
-      {productsCheck &&
-        productsCheck
-          .sort(
-            (a, b) =>
-              new Date(a.bookmarked_date).getMonth() -
-              new Date(b.bookmarked_date).getMonth()
-          )
-          .map((el) => <Cards key={el.id} typeCard={"History"} item={el} />)}
+      {checkInstanceIrequest(products.data) &&
+        products.data.response.map((product) => (
+          <Cards key={uuid()} typeCard={"History"} product={product.body} />
+        ))}
     </main>
   );
 };

@@ -1,77 +1,74 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext } from "react";
 import PropTypes from "prop-types";
-import { io } from "socket.io-client";
 
+import requestOptions from "../consts/requestOptions";
+import URLS from "../consts/URLS";
+
+import makeRequest from "../utils/makeRequest";
+import checkInstanceIrequest from "../utils/checkInstanceIrequest";
+
+import { useUserAuth } from "../hooks/useUserAuth";
+
+import { SiteProvider } from "./SiteContext";
+import { FavProvider } from "./FavContext";
 import { CartProvider } from "./CartContext";
 import { BoughtProvider } from "./BoughtContext";
-import { FavProvider } from "./FavContext";
 
-import { useFetch } from "../hooks/useFetch";
-
-import requests from "../assets/consts/request";
-
-const url = "http://localhost:3005/user/status";
-const socketURL = `http://localhost:3006/user`;
-
-const disconnectRequest = {
-  url: `http://localhost:3005/authentication/disconnect`,
-  config: { ...requests.getURLencoded },
-  aborter: new AbortController(),
-};
+import { Fetcher } from "../test/components/models/Request/Fetcher";
+import { HandlerErrorDefault } from "../test/components/models/HandlerError/HandlerErrorDefault";
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const { data, initStateFetch } = useFetch({
-    url,
-    config: requests.getURLencoded,
-  });
-  const [socketState, setSocketState] = useState(null);
+  const user = useUserAuth();
+  const { isAuth, isLoading } = user;
 
-  const disconnect = async () => {
-    const { status } = data;
-    if (status === "authorized") {
-      const res = await fetch(disconnectRequest.url, {
-        ...disconnectRequest.config,
-        signal: disconnectRequest.aborter.signal,
-      });
-      if (res.status === 200) window.location.replace("/");
+  const windowLocationReplace = (requestResponseClass) => {
+    if (checkInstanceIrequest(requestResponseClass))
+      window.location.replace(requestResponseClass.response.url);
+    else {
+      window.location.search = "";
     }
   };
 
-  useEffect(() => {
-    if (data.status === "authorized") {
-      const socket = io(socketURL, {
-        autoConnect: false,
-        auth: { token: data.result.id },
-      });
-      socket.connect();
-      setSocketState(() => socket);
-      return () => {
-        socket.disconnect();
-      };
-    }
-  }, [data]);
+  const loginByApi = async (formData) => {
+    const request = requestOptions.postAppJson;
+    request.body = JSON.stringify({
+      username: formData.userOREmail,
+      password: formData.pass,
+    });
 
-  useEffect(() => {
-    if (socketState) {
-      socketState.emit("joinRoom", data.result.nickname);
-      socketState.on("saluda", (msgServer) => {
-        console.log(msgServer);
-      });
-      return () => socketState.off("saluda");
+    if (!isLoading && !isAuth) {
+      await makeRequest(
+        new Fetcher(URLS.authenticationByApi, request),
+        new HandlerErrorDefault()
+      ).then((response) => windowLocationReplace(response));
     }
-  }, [socketState, data.result]);
+  };
+
+  const loginByMercadoLibre = async (search) => {
+    if (!isLoading && !isAuth) {
+      await makeRequest(
+        new Fetcher(
+          URLS.authenticationByMercadolibre + search,
+          requestOptions.getBodyEncoded
+        ),
+        new HandlerErrorDefault()
+      ).then((response) => windowLocationReplace(response));
+    }
+  };
 
   return (
-    <AuthContext.Provider
-      value={{ data, disconnect, socket: socketState, initStateFetch }}
-    >
-      <CartProvider>
-        <BoughtProvider>
-          <FavProvider>{children}</FavProvider>
-        </BoughtProvider>
-      </CartProvider>
+    <AuthContext.Provider value={{ user, loginByApi, loginByMercadoLibre }}>
+      {!isLoading && (
+        <SiteProvider>
+          <FavProvider>
+            <CartProvider>
+              <BoughtProvider>{children}</BoughtProvider>
+            </CartProvider>
+          </FavProvider>
+        </SiteProvider>
+      )}
     </AuthContext.Provider>
   );
 };

@@ -1,29 +1,29 @@
 import { PropTypes } from "prop-types";
 
-const Details = ({ item, handlerList }) => {
+const Details = ({ product }) => {
   return (
     <div>
-      <p data-name={"details"} onClick={(e) => handlerList({ e })}>
+      <p data-name={"details"} onClick={(e) => {}}>
         {"<--"}
       </p>
       <div>
         <div className="display--flex">
           <p>Producto</p>
-          <p>{item.price}</p>
+          <p>{product.price}</p>
         </div>
         <div className="display--flex">
           <p>Total</p>
-          <p>{item.price}</p>
+          <p>{product.price}</p>
         </div>
       </div>
       <div>
         Detalles del pago
         <div>
           <div className="display--flex flex-direction--column">
-            {item.quantity}
+            {product.quantity}
           </div>
           <div className="display--flex flex-direction--column">
-            {item.bookmarked_date}
+            {product.bookmarked_date}
           </div>
         </div>
       </div>
@@ -32,8 +32,8 @@ const Details = ({ item, handlerList }) => {
         <div>Ubi</div>
         <div>
           <div className="display--flex flex-direction--column">
-            {item.title}
-            {item.quantity}
+            {product.title}
+            {product.quantity}
           </div>
         </div>
       </div>
@@ -42,7 +42,6 @@ const Details = ({ item, handlerList }) => {
 };
 
 Details.propTypes = {
-  item: PropTypes.object,
-  handlerList: PropTypes.func,
+  product: PropTypes.object,
 };
 export default Details;

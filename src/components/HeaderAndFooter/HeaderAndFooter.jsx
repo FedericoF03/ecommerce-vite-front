@@ -14,7 +14,7 @@ const HeaderAndFooter = ({ children }) => {
 };
 
 HeaderAndFooter.propTypes = {
-  children: PropTypes.element
+  children: PropTypes.object,
 };
 
 export default HeaderAndFooter;

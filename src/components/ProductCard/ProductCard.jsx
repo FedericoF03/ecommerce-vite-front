@@ -3,25 +3,18 @@ import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 
 import ButtonFav from "../ButtonFav/ButtonFav";
+import { AuthContext } from "../../context/AuthenticationContext";
+import { useContext } from "react";
 
-const ProductCard = ({
-  data: { title, thumbnail, price: priceProduct, id },
-  currency,
-}) => {
+const ProductCard = ({ data: { title, thumbnail, price, id } }) => {
+  const { user } = useContext(AuthContext);
   const navigate = useNavigate();
-  const price =
-    currency.data.status === "authorized" &&
-    currency.data.result.symbol +
-      priceProduct
-        .toFixed(currency.data.result.decimal_places)
-        .replace(".", ",")
-        .replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   return (
     <article
       className="product-card"
       onClick={() => navigate(`/product/${id}`)}
     >
-      <ButtonFav id={id} />
+      {user.isAuth && <ButtonFav id={id} />}
       <img className="product-card__img" src={thumbnail} />
       <div className="product-card__conteiner-data">
         <p className="product-card__name">{title}</p>

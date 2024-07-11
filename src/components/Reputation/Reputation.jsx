@@ -1,20 +1,20 @@
 import { PropTypes } from "prop-types";
 
-const Reputation = ({ list }) => {
+const Reputation = ({ reputation }) => {
   return (
     <>
-      <a href={list.reputation.data.permalink}>
-        <p>{list.reputation.data.nickname}</p>
+      <a href={reputation.permalink}>
+        <p>{reputation.nickname}</p>
       </a>
-      <p>{list.reputation.data.country_id}</p>
+      <p>{reputation.country_id}</p>
       <div>
-        {list.reputation.data.seller_reputation.transactions.total > 0 && (
+        {reputation.seller_reputation.transactions.total > 0 && (
           <>
-            <p>{list.reputation.data.seller_reputation.transactions.total}</p>
-            <p>{list.reputation.data.seller_reputation.level_id}</p>
+            <p>{reputation.seller_reputation.transactions.total}</p>
+            <p>{reputation.seller_reputation.level_id}</p>
           </>
         )}
-        {list.reputation.data.seller_reputation.transactions.total <= 0 && (
+        {reputation.seller_reputation.transactions.total <= 0 && (
           <p>NO REPUTATION COLLECTED</p>
         )}
       </div>
@@ -23,7 +23,7 @@ const Reputation = ({ list }) => {
 };
 
 Reputation.propTypes = {
-  list: PropTypes.object,
+  reputation: PropTypes.object,
 };
 
 export default Reputation;

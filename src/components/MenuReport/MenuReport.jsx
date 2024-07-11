@@ -1,29 +1,36 @@
 import { PropTypes } from "prop-types";
 import { useState } from "react";
 
-const MenuReport = ({ item, handlerList }) => {
+import requestOptions from "../../consts/requestOptions";
+import URLS from "../../consts/URLS";
+
+import makeRequest from "../../utils/makeRequest";
+
+import { Fetcher } from "../../test/components/models/Request/Fetcher";
+import { HandlerErrorDefault } from "../../test/components/models/HandlerError/HandlerErrorDefault";
+
+const MenuReport = ({ product }) => {
   const [input, setInput] = useState({ title: "", content: "" });
 
   const submit = async (e) => {
     e.preventDefault();
-    if (input.title.length > 0 && input.content.length > 0)
-      await fetch(`http://localhost:3005/user/myreport`, {
-        credentials: "include",
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          itemID: item.id,
-          title: input.title,
-          text: input.content,
-        }),
-      }).then(() => handlerList({ e }));
+    if (input.title.length > 0 && input.content.length > 0) {
+      const myReportOptions = requestOptions.postBodyAppJson;
+      myReportOptions.body = JSON.stringify({
+        itemID: product.id,
+        title: input.title,
+        text: input.content,
+      });
+      makeRequest(
+        new Fetcher(URLS.myReport, myReportOptions),
+        new HandlerErrorDefault()
+      ).then(() => {});
+    }
   };
 
   return (
     <div>
-      <p data-name={"menuReport"} onClick={(e) => handlerList({ e })}>
+      <p data-name={"menuReport"} onClick={(e) => {}}>
         {"<-----"}
       </p>
       <form className="background-size--100vh">
@@ -66,8 +73,6 @@ const MenuReport = ({ item, handlerList }) => {
   );
 };
 MenuReport.propTypes = {
-  item: PropTypes.object,
-  handlerList: PropTypes.func,
-  listData: PropTypes.object,
+  product: PropTypes.object,
 };
 export default MenuReport;

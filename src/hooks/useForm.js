@@ -1,14 +1,17 @@
 import { useState } from "react";
 
-const useForm = (initStateForm) => {
-  const [formData, setFormData] = useState(initStateForm);
+const useForm = (initForm) => {
+  const [formData, setFormData] = useState(initForm);
 
-  const handlerForm = (e) => {
-    const targetName = e.target.name;
-    const targetValue = e.target.value;
-    setFormData((state) => ({ ...state, [targetName]: targetValue }));
+  const handlerForm = (dataChange) => {
+    const value = dataChange.target.value;
+    const name = dataChange.target.name;
+    const empty = "";
+    if (dataChange !== empty)
+      setFormData((formDataState) => ({ ...formDataState, [name] : value }));
   };
-  return { formData, setFormData, handlerForm };
+
+  return { formData, handlerForm };
 };
 
 export default useForm;

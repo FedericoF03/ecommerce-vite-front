@@ -1,21 +1,26 @@
 import uuid from "react-uuid";
 
-import Opinion from "../components/Opinion";
+import requestOptions from "../consts/requestOptions";
+import URLS from "../consts/URLS";
 
-import { useFetch } from "../hooks/useFetch";
+import checkInstanceIrequest from "../utils/checkInstanceIrequest";
 
-import requests from "../assets/consts/request";
+import useFetch from "../hooks/useFetch";
+
+import Opinion from "../pages/Product/Opinion";
 
 const MyOpinions = () => {
-  const { data } = useFetch({
-    url: `http://localhost:3005/user/myopinion`,
-    config: requests.getURLencoded,
+  const opinions = useFetch({
+    url: URLS.myOpinion,
+    options: requestOptions.getBodyEncoded,
   });
   return (
     <main className="background-color--o background-size--100vh background--user-form">
-      {data.result &&
-        data.result.length > 0 &&
-        data.result.map((el) => <Opinion key={uuid()} opinion={el} />)}
+      {checkInstanceIrequest(opinions.data) &&
+        opinions.data.response.length > 0 &&
+        opinions.data.response.map((opinion) => (
+          <Opinion key={uuid()} opinion={opinion} />
+        ))}
     </main>
   );
 };

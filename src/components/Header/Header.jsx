@@ -1,38 +1,27 @@
 import "./Header.css";
-import { useContext, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
 
-import Nav from "../Nav/Nav";
-import Pfp from "../Pfp";
-import ModalCart from "../ModalCart/ModalCart";
+import { useContext, useState } from "react";
+import { Link } from "react-router-dom";
 
 import { CartContext } from "../../context/CartContext";
-import { AuthContext } from "../../context/AuthenticationContext";
 
-import useToggles from "../../hooks/useToggles";
+import checkInstanceIrequest from "../../utils/checkInstanceIrequest";
+
+import ModalCart from "../ModalCart/ModalCart";
+import Pfp from "../Pfp";
+import Nav from "../Nav/Nav";
 
 const Header = () => {
-  const auth = useContext(AuthContext);
-  const cart = useContext(CartContext);
-  const navigate = useNavigate();
+  const { cart } = useContext(CartContext);
+
+  const quantityInCart = checkInstanceIrequest(cart.data)
+    ? cart.data.response.items.length
+    : 0;
+
+  //se puede hacer un hook para esto
   const [search, searchSet] = useState("");
-  const { list, setList } = useToggles({
-    toggleNav: false,
-    toggleCart: false,
-  });
-  const handlerToggleNav = () =>
-    setList((c) => ({ ...c, toggleNav: !list.toggleNav }));
-
-  const handlerToggleCart = () => {
-    if (auth.data.status === "authorized")
-      setList((c) => ({ ...c, toggleCart: !list.toggleCart }));
-    else navigate("/register");
-  };
-  const handlerInputSearch = (e) => searchSet(() => e.target.value);
-
-  const cartQuantity =
-    cart.data.status === "authorized" ? cart.data.result.items.length : 0;
   const displayInputSearch = search.length > 0;
+  const handlerInputSearch = (e) => searchSet(() => e.target.value);
 
   return (
     <header className="header">
@@ -59,13 +48,13 @@ const Header = () => {
           </button>
         )}
       </div>
-      <div onClick={handlerToggleCart} className="header__cart-conteiner">
+      <div onClick={() => {}} className="header__cart-conteiner">
         <img className="header__cart-img" src="/carrito.png" />
-        <p className="header__cart-quantity">{cartQuantity}</p>
-        {list.toggleCart && <ModalCart />}
+        <p className="header__cart-quantity">{quantityInCart}</p>
+        <ModalCart />
       </div>
-      <Pfp onClick={handlerToggleNav} />
-      {list.toggleNav && <Nav onClick={handlerToggleNav} />}
+      <Pfp onClick={() => {}} />
+      <Nav onClick={() => {}} />
     </header>
   );
 };
